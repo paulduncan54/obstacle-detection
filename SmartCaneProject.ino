@@ -26,6 +26,7 @@ Servo myservo;
 // WiFi credentials 
 const char* ssid = "YOUR_WIFI_SSID";
 const char* password =  "YOUR_WIFI_PASSWORD";
+String apiKey = "YOUR_API_KEY";
 void setup()
 { 
   pinMode(trigPin, OUTPUT);
@@ -86,6 +87,31 @@ long measureDistance()
 
 void loop()
 {  
+    if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+
+    HTTPClient http;
+
+    String url = "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + String(WiFi.RSSI()) + "," + String(WiFi.RSSI()) + "&key=" + apiKey;
+    
+    http.begin(url);
+    
+    int httpCode = http.GET(); 
+    
+    if (httpCode == HTTP_CODE_OK) {  
+
+      String payload = http.getString();   
+
+      Serial.println(payload);
+    }
+
+    else {
+      Serial.print("Error fetching location");
+    }
+
+    http.end();
+  }
+  
+  delay(10000);
   distance = measureDistance();
   Serial.println(distance);
   delay(700);
