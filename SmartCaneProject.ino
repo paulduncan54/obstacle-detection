@@ -1,6 +1,7 @@
 #include <Servo.h>
 //#include <UnoWiFiDevEd.h>
 //#include <GoogleMapsApi.h>
+#include <ESP8266WiFi.h>
 #define trigPin 11
 #define echoPin 12
 #define servoPin 9
@@ -22,6 +23,9 @@ long duration, distance;
 
 Servo myservo;
 
+// WiFi credentials 
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password =  "YOUR_WIFI_PASSWORD";
 void setup()
 { 
   pinMode(trigPin, OUTPUT);
@@ -32,6 +36,15 @@ void setup()
   myservo.attach(servoPin);
   myservo.write(servoPosition);
   Serial.begin(9600);
+  
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print("connected to wifi");
+  }
 }
 
 int rotateServo(){
